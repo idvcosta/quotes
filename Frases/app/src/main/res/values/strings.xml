@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Frases</string>
+    <string name="bt_authors">Autores</string>
+    <string name="bt_quotes">Frases</string>
+</resources>
