@@ -2,4 +2,6 @@
     <string name="app_name">Frases</string>
     <string name="bt_authors">Autores</string>
     <string name="bt_quotes">Frases</string>
+    <string name="hint_author">Digite o nome do autor</string>
+    <string name="bt_add">add</string>
 </resources>
