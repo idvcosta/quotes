@@ -18,6 +18,10 @@ public class QuotesViewModelProvider implements ViewModelProvider.Factory {
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new AuthorsViewModel(new QuotesRepository(context));
+        if (modelClass == AuthorsViewModel.class) {
+            return (T) new AuthorsViewModel(new QuotesRepository(context));
+        }else{
+            return (T) new QuotesViewModel();
+        }
     }
 }
