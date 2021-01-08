@@ -2,6 +2,8 @@ package com.ingrid.quotes.activities;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,17 @@ public class AuthorsActivity extends AppCompatActivity {
         RecyclerView rvAuthors = findViewById(R.id.rvAuthors);
         AuthorsAdapter adapter = new AuthorsAdapter();
         rvAuthors.setAdapter(adapter);
+
+        EditText etAuthor = findViewById(R.id.etAuthor);
+        Button btAdd = findViewById(R.id.btAdd);
+        btAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String authorName = etAuthor.getText().toString();
+                etAuthor.setText("");
+                viewModel.addAuthor(authorName);
+            }
+        });
 
         viewModel.authorsLiveData.observe(this, new Observer<List<Author>>() {
             @Override
