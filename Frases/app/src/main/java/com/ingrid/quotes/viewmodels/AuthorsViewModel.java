@@ -4,26 +4,38 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.ingrid.quotes.model.Author;
+import com.ingrid.quotes.repository.QuotesRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorsViewModel extends ViewModel {
 
-    private List<Author> authors;
     public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
+    private QuotesRepository repository;
 
-    public AuthorsViewModel() {
-        authors = new ArrayList<>();
-        authors.add(new Author("Shakespeare"));
-        authorsLiveData.postValue(authors);
+    public AuthorsViewModel(QuotesRepository repository) {
+        this.repository = repository;
+        new Thread() {
+            @Override
+            public void run() {
+                List<Author> authors = repository.allAuthors();
+                authorsLiveData.postValue(authors);
+            }
+        }.start();
     }
 
     public void addAuthor(String authorName) {
         if (isValid(authorName)) {
             Author author = new Author(authorName);
-            authors.add(author);
-            authorsLiveData.postValue(authors);
+            new Thread() {
+                @Override
+                public void run() {
+                    repository.add(author);
+
+                    List<Author> authors = repository.allAuthors();
+                    authorsLiveData.postValue(authors);
+                }
+            }.start();
         }
     }
 
