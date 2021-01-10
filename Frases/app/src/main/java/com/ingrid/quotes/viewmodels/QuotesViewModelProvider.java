@@ -20,8 +20,10 @@ public class QuotesViewModelProvider implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass == AuthorsViewModel.class) {
             return (T) new AuthorsViewModel(new QuotesRepository(context));
+        }else if (modelClass == QuotesViewModel.class){
+            return (T) new QuotesViewModel(new QuotesRepository((context)));
         }else{
-            return (T) new QuotesViewModel();
+            throw new IllegalArgumentException("Not implemented for: " + modelClass.getSimpleName());
         }
     }
 }

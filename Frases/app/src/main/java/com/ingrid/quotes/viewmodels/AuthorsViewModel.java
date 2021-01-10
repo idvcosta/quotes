@@ -18,10 +18,23 @@ public class AuthorsViewModel extends ViewModel {
         new Thread() {
             @Override
             public void run() {
-                List<Author> authors = repository.allAuthors();
-                authorsLiveData.postValue(authors);
+                refreshAuthors(repository);
             }
         }.start();
+    }
+
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+
+        repository.close();
+    }
+
+
+    private void refreshAuthors(QuotesRepository repository) {
+        List<Author> authors = repository.allAuthors();
+        authorsLiveData.postValue(authors);
     }
 
     public void addAuthor(String authorName) {
@@ -31,9 +44,7 @@ public class AuthorsViewModel extends ViewModel {
                 @Override
                 public void run() {
                     repository.add(author);
-
-                    List<Author> authors = repository.allAuthors();
-                    authorsLiveData.postValue(authors);
+                    refreshAuthors(repository);
                 }
             }.start();
         }
