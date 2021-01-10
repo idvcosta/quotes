@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey;
 public class Author {
 
     @PrimaryKey(autoGenerate = true)
-    public int authorId;
+    private int authorId;
     //TODO Test with getter and setter
     public String name;
 
@@ -19,7 +19,20 @@ public class Author {
         this.name = name;
     }
 
+    public int getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(int authorId) {
+        this.authorId = authorId;
+    }
+
     public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
         return name;
     }
 }

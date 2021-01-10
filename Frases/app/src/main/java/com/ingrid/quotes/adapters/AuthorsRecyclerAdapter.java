@@ -13,7 +13,7 @@ import com.ingrid.quotes.model.Author;
 
 import java.util.List;
 
-public class AuthorsAdapter extends RecyclerView.Adapter<AuthorsAdapter.AuthorHolder> {
+public class AuthorsRecyclerAdapter extends RecyclerView.Adapter<AuthorsRecyclerAdapter.AuthorHolder> {
 
     private List<Author> authors;
 

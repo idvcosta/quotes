@@ -3,14 +3,18 @@ package com.ingrid.quotes.viewmodels;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
+import com.ingrid.quotes.model.QuoteWithAuthor;
 import com.ingrid.quotes.repository.QuotesRepository;
 
 import java.util.List;
 
 public class QuotesViewModel extends ViewModel {
 
-    public MutableLiveData<List<Quote>> quotesLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<QuoteWithAuthor>> quotesLiveData = new MutableLiveData<>();
+    public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
+
     private QuotesRepository quotesRepository;
 
     public QuotesViewModel(QuotesRepository quotesRepository) {
@@ -20,6 +24,7 @@ public class QuotesViewModel extends ViewModel {
             @Override
             public void run() {
                 refreshQuotes();
+                refreshAuthor();
             }
         }.start();
     }
@@ -32,13 +37,18 @@ public class QuotesViewModel extends ViewModel {
     }
 
     private void refreshQuotes() {
-        List<Quote> quoteList = quotesRepository.allQuotes();
+        List<QuoteWithAuthor> quoteList = quotesRepository.allQuotes();
         quotesLiveData.postValue(quoteList);
     }
 
-    public void addQuote(String quoteText) {
+    private void refreshAuthor() {
+        List<Author> authorList = quotesRepository.allAuthors();
+        authorsLiveData.postValue(authorList);
+    }
+
+    public void addQuote(String quoteText, Author author) {
         if (isValid(quoteText)) {
-            Quote quote = new Quote(quoteText);
+            Quote quote = new Quote(quoteText, author.getAuthorId());
             new Thread() {
                 @Override
                 public void run() {

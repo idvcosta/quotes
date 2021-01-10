@@ -4,4 +4,5 @@
     <string name="bt_quotes">Frases</string>
     <string name="hint_author">Digite o nome do autor</string>
     <string name="bt_add">add</string>
+    <string name="hint_quote">Digite a frase</string>
 </resources>

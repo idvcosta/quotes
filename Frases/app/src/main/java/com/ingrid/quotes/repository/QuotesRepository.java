@@ -6,6 +6,7 @@ import androidx.room.Room;
 
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
+import com.ingrid.quotes.model.QuoteWithAuthor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class QuotesRepository {
         db.authorDAO().insertAuthor(author);
     }
 
-    public List<Quote> allQuotes() {
+    public List<QuoteWithAuthor> allQuotes() {
         return db.quotesDAO().allQuotes();
     }
 

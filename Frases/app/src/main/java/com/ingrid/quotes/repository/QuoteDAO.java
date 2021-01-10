@@ -5,13 +5,14 @@ import androidx.room.Insert;
 import androidx.room.Query;
 
 import com.ingrid.quotes.model.Quote;
+import com.ingrid.quotes.model.QuoteWithAuthor;
 
 import java.util.List;
 
 @Dao
 public interface QuoteDAO {
     @Query("SELECT * FROM quote")
-    List<Quote> allQuotes();
+    List<QuoteWithAuthor> allQuotes();
 
     @Insert
     void insertQuote(Quote quote);
