@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ingrid.quotes.R;
-import com.ingrid.quotes.adapters.AuthorsRecyclerAdapter;
+import com.ingrid.quotes.adapters.AuthorsAdapter;
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.viewmodels.AuthorsViewModel;
 import com.ingrid.quotes.viewmodels.QuotesViewModelProvider;
@@ -35,14 +35,14 @@ public class AuthorsActivity extends AppCompatActivity {
 
     private void initList() {
         RecyclerView rvAuthors = findViewById(R.id.rvAuthors);
-        AuthorsRecyclerAdapter adapter = new AuthorsRecyclerAdapter();
+        AuthorsAdapter adapter = new AuthorsAdapter(this);
         rvAuthors.setAdapter(adapter);
         rvAuthors.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         viewModel.authorsLiveData.observe(this, new Observer<List<Author>>() {
             @Override
             public void onChanged(List<Author> authors) {
-                adapter.setAuthors(authors);
+                adapter.updateAuthors(authors);
             }
         });
     }

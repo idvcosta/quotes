@@ -1,5 +1,6 @@
 package com.ingrid.quotes.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ingrid.quotes.R;
+import com.ingrid.quotes.activities.AuthorsActivity;
 import com.ingrid.quotes.model.Author;
 
 import java.util.List;
 
-public class AuthorsRecyclerAdapter extends RecyclerView.Adapter<AuthorsRecyclerAdapter.AuthorHolder> {
-
-    private List<Author> authors;
+public class AuthorsAdapter extends RecyclerView.Adapter<AuthorsAdapter.AuthorHolder> {
 
     public class AuthorHolder extends RecyclerView.ViewHolder {
 
@@ -28,8 +28,16 @@ public class AuthorsRecyclerAdapter extends RecyclerView.Adapter<AuthorsRecycler
         }
     }
 
+    private List<Author> authors;
+    private int darkBackground;
+    private int lightBackground;
 
-    public void setAuthors(List<Author> authors) {
+    public AuthorsAdapter(Context context) {
+        darkBackground = context.getColor(R.color.backgroud_row_dark);
+        lightBackground = context.getColor(R.color.background_row_light);
+    }
+
+    public void updateAuthors(List<Author> authors) {
         this.authors = authors;
         notifyDataSetChanged();
     }
@@ -46,7 +54,15 @@ public class AuthorsRecyclerAdapter extends RecyclerView.Adapter<AuthorsRecycler
         Author author = authors.get(position);
         String authorName = author.getName();
 
+        int color;
+        if(position % 2 ==0){
+            color = darkBackground;
+        }else{
+            color = lightBackground;
+        }
+
         authorHolder.tvName.setText(authorName);
+        authorHolder.itemView.setBackgroundColor(color);
     }
 
     @Override

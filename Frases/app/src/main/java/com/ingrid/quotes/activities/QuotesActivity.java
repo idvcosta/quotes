@@ -55,7 +55,7 @@ public class QuotesActivity extends AppCompatActivity {
 
     private void initQuotesList() {
         RecyclerView rvQuotes = findViewById(R.id.rvQuotes);
-        QuotesAdapter quotesAdapter = new QuotesAdapter();
+        QuotesAdapter quotesAdapter = new QuotesAdapter(this);
         rvQuotes.setAdapter(quotesAdapter);
 
         rvQuotes.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
