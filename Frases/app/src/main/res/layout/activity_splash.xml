@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SplashActivity">
+
+    <TextView
+        android:drawableLeft="@drawable/aspas_esquerda"
+        android:drawableRight="@drawable/aspas_direita"
+        android:id="@+id/tvQuoteSplash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Só sei que nada sei" />
+
+    <TextView
+        android:id="@+id/tvAuthorSplash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintRight_toRightOf="@id/tvQuoteSplash"
+        app:layout_constraintTop_toBottomOf="@id/tvQuoteSplash"
+        tools:text="Socrátes" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

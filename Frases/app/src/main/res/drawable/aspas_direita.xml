@@ -1,0 +1,7 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="10dp"
+        android:height="10dp"
+        android:bottom="5dp"
+        android:drawable="@drawable/aspas_direita_img"/>
+
+</layer-list>
