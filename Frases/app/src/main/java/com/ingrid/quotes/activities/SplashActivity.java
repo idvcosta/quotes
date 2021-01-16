@@ -2,7 +2,9 @@ package com.ingrid.quotes.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -42,18 +44,35 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 QuotesRepository quotesRepository = new QuotesRepository(SplashActivity.this);
                 List<QuoteWithAuthor> quotesWithAuthors = quotesRepository.allQuotes();
-                QuoteWithAuthor quoteWithAuthor = quotesWithAuthors.get(0);
+                int maxIndex = quotesWithAuthors.size();
 
-                String quoteText = quoteWithAuthor.quote.getQuote();
-                String authorText = quoteWithAuthor.author.getName();
+                if (maxIndex != 0) {
+                    int index = getNextIndex();
+                    index = index % maxIndex;
+                    QuoteWithAuthor quoteWithAuthor = quotesWithAuthors.get(index);
 
-                TextView tvQuote = findViewById(R.id.tvQuoteSplash);
-                TextView tvAuthor = findViewById(R.id.tvAuthorSplash);
+                    String quoteText = quoteWithAuthor.quote.getQuote();
+                    String authorText = quoteWithAuthor.author.getName();
 
-                tvQuote.setText(quoteText);
-                tvAuthor.setText(authorText);
+                    TextView tvQuote = findViewById(R.id.tvQuoteSplash);
+                    TextView tvAuthor = findViewById(R.id.tvAuthorSplash);
+
+                    tvQuote.setText(quoteText);
+                    tvAuthor.setText(authorText);
+                }
             }
         }.start();
+    }
+
+    private int getNextIndex() {
+        SharedPreferences preferences = getSharedPreferences("app", Context.MODE_PRIVATE);
+        int nextQuote = preferences.getInt("nextQuote", 0);
+
+        SharedPreferences.Editor edit = preferences.edit();
+        edit.putInt("nextQuote", nextQuote + 1);
+        edit.apply();
+
+        return nextQuote;
     }
 
     @Override
