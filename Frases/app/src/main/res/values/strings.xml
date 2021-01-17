@@ -5,4 +5,6 @@
     <string name="hint_author">Digite o nome do autor</string>
     <string name="bt_add">add</string>
     <string name="hint_quote">Digite a frase</string>
+    <string name="bt_cancel">cancelar</string>
+    <string name="add_author_title">Cadastro de autor</string>
 </resources>
