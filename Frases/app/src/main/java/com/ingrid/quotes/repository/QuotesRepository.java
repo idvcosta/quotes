@@ -16,7 +16,7 @@ public class QuotesRepository {
     private final AppDatabase db;
 
     public QuotesRepository(Context context) {
-         db = Room.databaseBuilder(context, AppDatabase.class, "db").build();
+        db = Room.databaseBuilder(context, AppDatabase.class, "db").build();
     }
 
     public List<Author> allAuthors() {
@@ -27,12 +27,20 @@ public class QuotesRepository {
         db.authorDAO().insertAuthor(author);
     }
 
+    public void delete(Author author) {
+        db.authorDAO().deleteAuthor(author);
+    }
+
     public List<QuoteWithAuthor> allQuotes() {
         return db.quotesDAO().allQuotes();
     }
 
     public void add(Quote quote) {
         db.quotesDAO().insertQuote(quote);
+    }
+
+    public void delete(Quote quote) {
+        db.quotesDAO().deleteQuote(quote);
     }
 
     public void close() {

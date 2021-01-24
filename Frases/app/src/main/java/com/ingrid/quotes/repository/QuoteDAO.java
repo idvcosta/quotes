@@ -1,6 +1,7 @@
 package com.ingrid.quotes.repository;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -16,4 +17,7 @@ public interface QuoteDAO {
 
     @Insert
     void insertQuote(Quote quote);
+
+    @Delete
+    void deleteQuote(Quote quote);
 }

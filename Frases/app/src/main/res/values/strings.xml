@@ -7,4 +7,9 @@
     <string name="hint_quote">Digite a frase</string>
     <string name="bt_cancel">cancelar</string>
     <string name="add_author_title">Cadastro de autor</string>
+    <string name="name">Nome</string>
+    <string name="title_confirmation">Confirmação</string>
+    <string name="authors">Autores</string>
+    <string name="message_delete">Deseja excluir \" %s \"?</string>
+    <string name="bt_confirmation">Confirmar</string>
 </resources>

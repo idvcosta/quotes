@@ -3,6 +3,7 @@ package com.ingrid.quotes.viewmodels;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.ingrid.quotes.adapters.DeleteListener;
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
 import com.ingrid.quotes.model.QuoteWithAuthor;
@@ -10,7 +11,7 @@ import com.ingrid.quotes.repository.QuotesRepository;
 
 import java.util.List;
 
-public class QuotesViewModel extends ViewModel {
+public class QuotesViewModel extends ViewModel implements DeleteListener<Quote> {
 
     public MutableLiveData<List<QuoteWithAuthor>> quotesLiveData = new MutableLiveData<>();
     public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
@@ -58,6 +59,17 @@ public class QuotesViewModel extends ViewModel {
             }.start();
         }
 
+    }
+
+    @Override
+    public void delete(Quote quote) {
+        new Thread() {
+            @Override
+            public void run() {
+                quotesRepository.delete(quote);
+                refreshQuotes();
+            }
+        }.start();
     }
 
     private boolean isValid(String quoteText) {

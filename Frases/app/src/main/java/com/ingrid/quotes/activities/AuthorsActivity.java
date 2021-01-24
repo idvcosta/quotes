@@ -32,6 +32,7 @@ public class AuthorsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authors);
+        getSupportActionBar().setTitle(R.string.authors);
         viewModel = new ViewModelProvider(this, new QuotesViewModelProvider(this)).get(AuthorsViewModel.class);
 
         initList();
@@ -40,7 +41,7 @@ public class AuthorsActivity extends AppCompatActivity {
 
     private void initList() {
         RecyclerView rvAuthors = findViewById(R.id.rvAuthors);
-        AuthorsAdapter adapter = new AuthorsAdapter(this);
+        AuthorsAdapter adapter = new AuthorsAdapter(this, viewModel);
         rvAuthors.setAdapter(adapter);
         rvAuthors.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
@@ -60,12 +61,12 @@ public class AuthorsActivity extends AppCompatActivity {
     }
 
     private void showRegistryDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
         ViewGroup view = (ViewGroup) inflater.inflate(R.layout.dialog_add_author, null);
         EditText etName = view.findViewById(R.id.etName);
 
-        builder
+        dialogBuilder
                 .setTitle(R.string.add_author_title)
                 .setView(view)
                 .setPositiveButton(R.string.bt_add, (dialog, id) -> {
@@ -75,6 +76,6 @@ public class AuthorsActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.bt_cancel, (dialog, id) -> {
 
                 });
-        builder.create().show();
+        dialogBuilder.create().show();
     }
 }

@@ -1,6 +1,7 @@
 package com.ingrid.quotes.repository;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -17,4 +18,6 @@ public interface AuthorDAO {
     @Insert
     void insertAuthor(Author author);
 
+    @Delete
+    void deleteAuthor(Author author);
 }
