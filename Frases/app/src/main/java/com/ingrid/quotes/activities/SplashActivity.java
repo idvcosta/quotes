@@ -15,11 +15,23 @@ import com.ingrid.quotes.model.QuoteWithAuthor;
 import com.ingrid.quotes.repository.QuotesRepository;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class SplashActivity extends AppCompatActivity {
 
     private static final long DELAY_TIME = 3000;
     private Handler handler;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,29 +51,39 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void updateQuote() {
-        new Thread() {
-            @Override
-            public void run() {
-                QuotesRepository quotesRepository = new QuotesRepository(SplashActivity.this);
-                List<QuoteWithAuthor> quotesWithAuthors = quotesRepository.allQuotes();
-                int maxIndex = quotesWithAuthors.size();
+        Disposable showQuoteDisposable = Observable.fromCallable(this::chooseQuote)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(this::showQuote)
+                .subscribe();
+        disposables.add(showQuoteDisposable);
+    }
 
-                if (maxIndex != 0) {
-                    int index = getNextIndex();
-                    index = index % maxIndex;
-                    QuoteWithAuthor quoteWithAuthor = quotesWithAuthors.get(index);
+    private void showQuote(QuoteWithAuthor quoteWithAuthor) {
+        if (quoteWithAuthor != null) {
+            String quoteText = quoteWithAuthor.quote.getQuote();
+            String authorText = quoteWithAuthor.author.getName();
 
-                    String quoteText = quoteWithAuthor.quote.getQuote();
-                    String authorText = quoteWithAuthor.author.getName();
+            TextView tvQuote = findViewById(R.id.tvQuoteSplash);
+            TextView tvAuthor = findViewById(R.id.tvAuthorSplash);
 
-                    TextView tvQuote = findViewById(R.id.tvQuoteSplash);
-                    TextView tvAuthor = findViewById(R.id.tvAuthorSplash);
+            tvQuote.setText(quoteText);
+            tvAuthor.setText(authorText);
+        }
+    }
 
-                    tvQuote.setText(quoteText);
-                    tvAuthor.setText(authorText);
-                }
-            }
-        }.start();
+    private QuoteWithAuthor chooseQuote() {
+        QuotesRepository quotesRepository = new QuotesRepository(SplashActivity.this);
+        List<QuoteWithAuthor> quotesWithAuthors = quotesRepository.allQuotes();
+        int maxIndex = quotesWithAuthors.size();
+        QuoteWithAuthor quoteWithAuthor = null;
+
+        if (maxIndex != 0) {
+            int index = getNextIndex();
+            index = index % maxIndex;
+            quoteWithAuthor = quotesWithAuthors.get(index);
+        }
+        return quoteWithAuthor;
     }
 
     private int getNextIndex() {
@@ -79,5 +101,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+        disposables.dispose();
     }
 }

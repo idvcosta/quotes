@@ -6,48 +6,43 @@ import androidx.lifecycle.ViewModel;
 import com.ingrid.quotes.adapters.DeleteListener;
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.repository.QuotesRepository;
+import com.ingrid.quotes.util.RXManager;
 
 import java.util.List;
 
 public class AuthorsViewModel extends ViewModel implements DeleteListener<Author> {
 
     public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
-    private QuotesRepository repository;
+    private final QuotesRepository repository;
+    private RXManager rxManager = new RXManager();
 
     public AuthorsViewModel(QuotesRepository repository) {
         this.repository = repository;
-        new Thread() {
-            @Override
-            public void run() {
-                refreshAuthors(repository);
-            }
-        }.start();
+
+        rxManager.onIO(this::refreshAuthors);
     }
 
+    private void refreshAuthors() {
+        List<Author> authors = repository.allAuthors();
+        authorsLiveData.postValue(authors);
+    }
 
     @Override
     protected void onCleared() {
         super.onCleared();
 
+        rxManager.dispose();
         repository.close();
-    }
-
-
-    private void refreshAuthors(QuotesRepository repository) {
-        List<Author> authors = repository.allAuthors();
-        authorsLiveData.postValue(authors);
     }
 
     public void addAuthor(String authorName) {
         if (isValid(authorName)) {
             Author author = new Author(authorName);
-            new Thread() {
-                @Override
-                public void run() {
-                    repository.add(author);
-                    refreshAuthors(repository);
-                }
-            }.start();
+
+            rxManager.onIO(() -> {
+                repository.add(author);
+                refreshAuthors();
+            });
         }
     }
 
@@ -57,12 +52,9 @@ public class AuthorsViewModel extends ViewModel implements DeleteListener<Author
 
     @Override
     public void delete(Author author) {
-        new Thread() {
-            @Override
-            public void run() {
-                repository.delete(author);
-                refreshAuthors(repository);
-            }
-        }.start();
+        rxManager.onIO(() -> {
+            repository.delete(author);
+            refreshAuthors();
+        });
     }
 }

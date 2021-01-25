@@ -8,6 +8,7 @@ import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
 import com.ingrid.quotes.model.QuoteWithAuthor;
 import com.ingrid.quotes.repository.QuotesRepository;
+import com.ingrid.quotes.util.RXManager;
 
 import java.util.List;
 
@@ -17,23 +18,21 @@ public class QuotesViewModel extends ViewModel implements DeleteListener<Quote> 
     public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
 
     private QuotesRepository quotesRepository;
+    private RXManager rxManager = new RXManager();
 
     public QuotesViewModel(QuotesRepository quotesRepository) {
         this.quotesRepository = quotesRepository;
-
-        new Thread() {
-            @Override
-            public void run() {
-                refreshQuotes();
-                refreshAuthor();
-            }
-        }.start();
+        rxManager.
+                onIO(() -> {
+                    refreshQuotes();
+                    refreshAuthor();
+                });
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-
+        rxManager.dispose();
         quotesRepository.close();
     }
 
@@ -50,26 +49,21 @@ public class QuotesViewModel extends ViewModel implements DeleteListener<Quote> 
     public void addQuote(String quoteText, Author author) {
         if (isValid(quoteText)) {
             Quote quote = new Quote(quoteText, author.getAuthorId());
-            new Thread() {
-                @Override
-                public void run() {
-                    quotesRepository.add(quote);
-                    refreshQuotes();
-                }
-            }.start();
+            rxManager.
+                    onIO(() -> {
+                        quotesRepository.add(quote);
+                        refreshQuotes();
+                    });
         }
-
     }
 
     @Override
     public void delete(Quote quote) {
-        new Thread() {
-            @Override
-            public void run() {
-                quotesRepository.delete(quote);
-                refreshQuotes();
-            }
-        }.start();
+        rxManager.
+                onIO(() -> {
+                    quotesRepository.delete(quote);
+                    refreshQuotes();
+                });
     }
 
     private boolean isValid(String quoteText) {
