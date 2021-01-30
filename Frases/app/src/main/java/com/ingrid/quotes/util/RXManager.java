@@ -1,8 +1,9 @@
 package com.ingrid.quotes.util;
 
-import io.reactivex.Observable;
+import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class RXManager {
@@ -13,11 +14,11 @@ public class RXManager {
         disposables.dispose();
     }
 
-    public void onIO(Runnable runnable) {
-        Disposable disposable = Observable.fromCallable(() -> {
-            runnable.run();
-            return false;
-        }).subscribeOn(Schedulers.io()).subscribe();
+    public void onIO(Action action) {
+        Disposable disposable = Completable
+                .fromAction(action)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
         disposables.add(disposable);
     }
 
