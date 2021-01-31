@@ -13,6 +13,7 @@ public class Quote {
 
     private String quote;
     private int authorId;
+    private boolean isFavorite;
 
     public Quote() {
 
@@ -45,5 +46,13 @@ public class Quote {
 
     public void setAuthorId(int authorId) {
         this.authorId = authorId;
+    }
+
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

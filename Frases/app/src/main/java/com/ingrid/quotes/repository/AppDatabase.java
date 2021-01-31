@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase;
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
 
-@Database(entities = {Author.class, Quote.class}, version = 1)
+@Database(entities = {Author.class, Quote.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract AuthorDAO authorDAO();
 

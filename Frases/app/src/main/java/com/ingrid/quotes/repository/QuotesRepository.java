@@ -2,7 +2,10 @@ package com.ingrid.quotes.repository;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.room.Room;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
@@ -16,7 +19,19 @@ public class QuotesRepository {
     private final AppDatabase db;
 
     public QuotesRepository(Context context) {
-        db = Room.databaseBuilder(context, AppDatabase.class, "db").build();
+        db = Room
+                .databaseBuilder(context, AppDatabase.class, "db")
+                .addMigrations(create1To2Migration())
+                .build();
+    }
+
+    private Migration create1To2Migration() {
+        return new Migration(1, 2) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+                database.execSQL("ALTER TABLE Quote ADD COLUMN isFavorite INTEGER not null default 0");
+            }
+        };
     }
 
     public List<Author> allAuthors() {
@@ -45,5 +60,9 @@ public class QuotesRepository {
 
     public void close() {
         db.close();
+    }
+
+    public void update(Quote quote) {
+        db.quotesDAO().update(quote);
     }
 }

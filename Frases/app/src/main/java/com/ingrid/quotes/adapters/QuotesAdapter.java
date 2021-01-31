@@ -3,17 +3,16 @@ package com.ingrid.quotes.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.sip.SipSession;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.ingrid.quotes.R;
-import com.ingrid.quotes.activities.QuotesActivity;
 import com.ingrid.quotes.model.Quote;
 import com.ingrid.quotes.model.QuoteWithAuthor;
 
@@ -25,11 +24,13 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuotesHold
 
         TextView tvQuote;
         TextView tvAuthorName;
+        ImageView ivFavorite;
 
         public QuotesHolder(@NonNull View itemView) {
             super(itemView);
             tvQuote = itemView.findViewById(R.id.tvQuote);
             tvAuthorName = itemView.findViewById(R.id.tvAuthorName);
+            ivFavorite = itemView.findViewById(R.id.ivFavorite);
         }
 
     }
@@ -38,11 +39,13 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuotesHold
     private int darkBackground;
     private int lightBackground;
     private DeleteListener<Quote> deleteQuoteListener;
+    private FavoriteListener<Quote> favoriteListener;
 
-    public QuotesAdapter(Context context, DeleteListener<Quote> deleteQuoteListener) {
+    public QuotesAdapter(Context context, DeleteListener<Quote> deleteQuoteListener, FavoriteListener<Quote> favoriteListener) {
         darkBackground = context.getColor(R.color.backgroud_row_dark);
         lightBackground = context.getColor(R.color.background_row_light);
         this.deleteQuoteListener = deleteQuoteListener;
+        this.favoriteListener = favoriteListener;
     }
 
     @Override
@@ -77,7 +80,14 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuotesHold
     public QuotesHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_quote, parent, false);
         view.setOnLongClickListener(this);
-        return new QuotesHolder(view);
+        QuotesHolder quotesHolder = new QuotesHolder(view);
+        quotesHolder.ivFavorite.setOnClickListener(this::onFavoriteClicked);
+        return quotesHolder;
+    }
+
+    private void onFavoriteClicked(View source) {
+        Quote quote = (Quote) source.getTag();
+        favoriteListener.toggleFavorite(quote);
     }
 
     public void updateQuotes(List<QuoteWithAuthor> quotes) {
@@ -90,18 +100,28 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuotesHold
         QuoteWithAuthor quoteWithAuthor = quotes.get(position);
         String quoteText = quoteWithAuthor.quote.getQuote();
         String authorName = quoteWithAuthor.author.getName();
+        boolean isFavorite = quoteWithAuthor.quote.isFavorite();
 
         int color;
-        if(position % 2 == 0){
+        int favoriteIcon;
+        if (position % 2 == 0) {
             color = darkBackground;
-        }else{
+        } else {
             color = lightBackground;
+        }
+
+        if (isFavorite) {
+            favoriteIcon = android.R.drawable.star_big_on;
+        } else {
+            favoriteIcon = android.R.drawable.star_big_off;
         }
 
         holder.tvQuote.setText(quoteText);
         holder.tvAuthorName.setText(authorName);
         holder.itemView.setBackgroundColor(color);
         holder.itemView.setTag(quoteWithAuthor.quote);
+        holder.ivFavorite.setImageResource(favoriteIcon);
+        holder.ivFavorite.setTag(quoteWithAuthor.quote);
     }
 
     @Override

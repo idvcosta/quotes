@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.ingrid.quotes.adapters.DeleteListener;
+import com.ingrid.quotes.adapters.FavoriteListener;
 import com.ingrid.quotes.model.Author;
 import com.ingrid.quotes.model.Quote;
 import com.ingrid.quotes.model.QuoteWithAuthor;
@@ -12,7 +13,9 @@ import com.ingrid.quotes.util.RXManager;
 
 import java.util.List;
 
-public class QuotesViewModel extends ViewModel implements DeleteListener<Quote> {
+public class QuotesViewModel extends ViewModel
+        implements DeleteListener<Quote>,
+        FavoriteListener<Quote> {
 
     public MutableLiveData<List<QuoteWithAuthor>> quotesLiveData = new MutableLiveData<>();
     public MutableLiveData<List<Author>> authorsLiveData = new MutableLiveData<>();
@@ -68,5 +71,14 @@ public class QuotesViewModel extends ViewModel implements DeleteListener<Quote> 
 
     private boolean isValid(String quoteText) {
         return quoteText.length() >= 3;
+    }
+
+    @Override
+    public void toggleFavorite(Quote quote) {
+        rxManager.onIO(() -> {
+            quote.setFavorite(!quote.isFavorite());
+            quotesRepository.update(quote);
+            refreshQuotes();
+        });
     }
 }
